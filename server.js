@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const cron = require('node-cron');
 const { fetchCookies } = require('./cookieFetcher');
 
@@ -9,6 +10,9 @@ const PORT = process.env.PORT || 3000;
 // Enable CORS
 app.use(cors());
 app.use(express.json());
+
+// Serve static files (dashboard)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Store the latest cookie data
 let cookieData = {
@@ -54,8 +58,13 @@ cron.schedule('0 */6 * * *', async () => {
   }
 });
 
-// Health check endpoint
+// Dashboard - root redirects to dashboard
 app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Health check API endpoint
+app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     message: 'Drama Cookie Fetcher API',
@@ -63,6 +72,7 @@ app.get('/', (req, res) => {
     lastUpdate: cookieData.updatedAt,
     source: cookieData.source,
     endpoints: {
+      dashboard: '/ - Cookie management dashboard',
       cookies: 'GET /api/cookies - Get current cookies',
       refresh: 'POST /api/refresh - Trigger automatic fetch',
       manual: 'POST /api/cookies/manual - Manually set cookies'

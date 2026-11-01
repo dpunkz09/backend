@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Capture Bookmarklet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .step p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .bookmarklet {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: move;
+            border: 3px dashed rgba(255,255,255,0.5);
+            transition: all 0.3s;
+        }
+        .bookmarklet:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .drag-hint {
+            text-align: center;
+            margin: 20px 0;
+            color: #667eea;
+            font-weight: 600;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .alternative {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .alternative h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .code:hover {
+            background: #3d3d3d;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔖 Cookie Capture Bookmarklet</h1>
+        <p class="subtitle">One-click cookie capture from any page</p>
+
+        <div class="step">
+            <h3>Step 1: Drag the Bookmarklet</h3>
+            <p>Drag this button to your bookmarks bar:</p>
+            <div class="drag-hint">👇 Drag Me 👇</div>
+            <div style="text-align: center;">
+                <a href='javascript:(function(){const API_URL="REPLACE_WITH_YOUR_API_URL";const cookies=document.cookie;if(!cookies){alert("❌ No cookies found on this page!");return;}fetch(API_URL+"/api/cookies/manual",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cookie:cookies,userAgent:navigator.userAgent})}).then(r=>r.json()).then(d=>{if(d.success){alert("✅ Success! Captured "+d.cookieCount+" cookies");}else{alert("❌ Error: "+d.error);}}).catch(e=>alert("❌ Network error: "+e.message));})();' 
+                   class="bookmarklet"
+                   onclick="return false;">
+                    🍪 Capture Cookies
+                </a>
+            </div>
+            <p style="margin-top: 15px; color: #666; font-size: 13px;">
+                <strong>Note:</strong> You need to edit the bookmarklet after dragging and replace <code>REPLACE_WITH_YOUR_API_URL</code> with your actual API URL.
+            </p>
+        </div>
+
+        <div class="step">
+            <h3>Step 2: Configure Your API URL</h3>
+            <p>Right-click the bookmarklet in your bookmarks bar and edit the URL. Replace <code>REPLACE_WITH_YOUR_API_URL</code> with:</p>
+            <div class="code" onclick="copyToClipboard(this.textContent)" id="apiUrl">
+https://backend-zbr5.onrender.com
+            </div>
+            <button onclick="copyToClipboard(document.getElementById('apiUrl').textContent)">📋 Copy URL</button>
+        </div>
+
+        <div class="step">
+            <h3>Step 3: Use It!</h3>
+            <p>1. Visit <a href="https://dramadunyam.com/en/series/scorns-of-the-olympian-blood/episode-1" target="_blank" style="color: #667eea;">dramadunyam.com</a></p>
+            <p>2. Wait for Cloudflare challenge to complete</p>
+            <p>3. Click the "🍪 Capture Cookies" bookmarklet in your bookmarks bar</p>
+            <p>4. Done! ✨</p>
+        </div>
+
+        <div class="alternative">
+            <h4>🔧 Alternative: Create Bookmarklet Manually</h4>
+            <p>If drag-and-drop doesn't work, create a new bookmark manually with this JavaScript code:</p>
+            <div class="code" onclick="copyToClipboard(this.textContent.trim())" id="jsCode">
+javascript:(function(){const API_URL="https://backend-zbr5.onrender.com";const cookies=document.cookie;if(!cookies){alert("❌ No cookies found on this page!");return;}fetch(API_URL+"/api/cookies/manual",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cookie:cookies,userAgent:navigator.userAgent})}).then(r=>r.json()).then(d=>{if(d.success){alert("✅ Success! Captured "+d.cookieCount+" cookies");}else{alert("❌ Error: "+d.error);}}).catch(e=>alert("❌ Network error: "+e.message));})();
+            </div>
+            <button onclick="copyToClipboard(document.getElementById('jsCode').textContent.trim())">📋 Copy Code</button>
+            <p style="margin-top: 10px; font-size: 13px; color: #666;">
+                1. Create a new bookmark<br>
+                2. Name it "Capture Cookies"<br>
+                3. Paste the code above as the URL<br>
+                4. Save it
+            </p>
+        </div>
+
+        <a href="/" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Copied to clipboard!');
+            }).catch(err => {
+                alert('❌ Failed to copy: ' + err);
+            });
+        }
+    </script>
+</body>
+</html>

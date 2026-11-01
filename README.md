@@ -1,15 +1,44 @@
 # Drama Cookie Fetcher API
 
-Automated cookie fetcher service for dramadunyam.com that can be deployed to Render.
+Automated cookie fetcher service for dramadunyam.com with a **public dashboard** for easy cookie management.
 
-## Features
+## 🎯 Features
 
+- **Public Dashboard** - Web UI for easy cookie management at `/`
+- **Bookmarklet** - One-click cookie capture from any browser
 - Automated cookie fetching using Puppeteer with Stealth plugin
-- Advanced Cloudflare bypass using puppeteer-extra-plugin-stealth
-- Handles Cloudflare challenges automatically
+- Advanced Cloudflare bypass (attempts automatic fetch)
 - Auto-refresh cookies every 6 hours via cron job
-- REST API endpoints for accessing cookies
+- REST API endpoints for programmatic access
 - Ready for Render deployment
+
+## 🚀 Quick Start
+
+1. **Deploy to Render** (see deployment section below)
+2. **Visit the Dashboard** at `https://your-app.onrender.com`
+3. **Install the Bookmarklet** from the dashboard
+4. **Visit dramadunyam.com** and click the bookmarklet
+5. **Done!** Cookies are now available via API
+
+## 📊 Public Dashboard
+
+Access the dashboard at the root URL: `https://your-app.onrender.com/`
+
+Features:
+- Real-time cookie status
+- One-click bookmarklet installation
+- Quick actions (refresh, test, copy cookies)
+- Automatic status updates every 30 seconds
+
+## 🔖 Bookmarklet (Recommended Method)
+
+The easiest way to capture cookies:
+
+1. Visit `https://your-app.onrender.com/bookmarklet.html`
+2. Drag the bookmarklet to your bookmarks bar
+3. Visit dramadunyam.com and complete Cloudflare challenge
+4. Click the bookmarklet
+5. Cookies automatically uploaded to your API!
 
 ## API Endpoints
 
