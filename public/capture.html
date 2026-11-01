@@ -12,262 +12,293 @@
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .capture-bar {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .capture-bar h1 {
-            font-size: 18px;
-            font-weight: 600;
-            margin: 0;
-        }
-        .capture-bar p {
-            font-size: 13px;
-            opacity: 0.9;
-            margin: 0;
-            flex-basis: 100%;
-        }
-        .button-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        button {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
-        }
-        button:active {
-            transform: translateY(0);
-        }
-        button.secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid white;
-        }
-        #pageFrame {
-            flex: 1;
-            border: none;
-            width: 100%;
-            background: white;
-        }
-        .status {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.2);
-            margin-left: 15px;
-        }
-        .status.success {
-            background: #28a745;
-        }
-        .status.pending {
-            background: #ffc107;
-            color: #333;
-        }
-        @media (max-width: 768px) {
-            .capture-bar {
-                padding: 12px 15px;
-            }
-            .capture-bar h1 {
-                font-size: 16px;
-            }
-            button {
-                padding: 8px 16px;
-                font-size: 13px;
-            }
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
-        .modal.show {
-            display: flex;
-        }
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            max-width: 500px;
+        .container {
+            max-width: 600px;
             width: 100%;
-            text-align: center;
         }
-        .modal h2 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-        .modal p {
-            color: #666;
-            line-height: 1.6;
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             margin-bottom: 20px;
         }
-        .modal button {
-            width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            margin-top: 10px;
+        h1 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 32px;
         }
-        .instruction {
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .step-card {
             background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+        .step-number {
+            display: inline-block;
+            width: 36px;
+            height: 36px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .step-card h3 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        .step-card p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        button, .button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        button:hover, .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+        button:active, .button:active {
+            transform: translateY(0);
+        }
+        .button-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            box-shadow: none;
+        }
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            margin: 15px 0;
+            transition: border-color 0.3s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            display: none;
+            font-weight: 500;
+        }
+        .alert.success {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+        }
+        .alert.error {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+        }
+        .alert.info {
+            background: #d1ecf1;
+            border: 2px solid #bee5eb;
+            color: #0c5460;
+        }
+        .code-snippet {
+            background: #2d2d2d;
+            color: #f8f8f2;
             padding: 15px;
             border-radius: 10px;
-            border-left: 4px solid #667eea;
-            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
             margin: 15px 0;
+            word-break: break-all;
+            cursor: pointer;
+            transition: background 0.2s;
         }
-        .instruction ol {
-            margin: 10px 0 0 20px;
-            color: #555;
+        .code-snippet:hover {
+            background: #3d3d3d;
         }
-        .instruction li {
-            margin: 8px 0;
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status-badge.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .emoji-large {
+            font-size: 48px;
+            display: block;
+            text-align: center;
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
-    <div class="capture-bar">
-        <div style="flex: 1;">
-            <h1>🍪 Cookie Capture <span id="statusBadge" class="status pending">Ready</span></h1>
-            <p>Visit the page below, complete Cloudflare, then click capture</p>
-        </div>
-        <div class="button-group">
-            <button onclick="showInstructions()">📖 How to Use</button>
-            <button onclick="captureCookies()">🎯 Capture Cookies</button>
-            <button onclick="window.location.href='/'" class="secondary">← Dashboard</button>
-        </div>
-    </div>
+    <div class="container">
+        <div class="card">
+            <span class="emoji-large">🍪</span>
+            <h1>Quick Cookie Capture</h1>
+            <p class="subtitle">Follow these simple steps to capture cookies from dramadunyam.com</p>
 
-    <iframe 
-        id="pageFrame" 
-        src="https://dramadunyam.com/en/series/scorns-of-the-olympian-blood/episode-1"
-    ></iframe>
-
-    <!-- Instructions Modal -->
-    <div id="instructionsModal" class="modal">
-        <div class="modal-content">
-            <h2>📖 How to Use</h2>
-            <div class="instruction">
-                <ol>
-                    <li><strong>Wait</strong> for the page below to load and complete Cloudflare challenge</li>
-                    <li><strong>Click</strong> the "🎯 Capture Cookies" button above</li>
-                    <li><strong>Follow</strong> the prompt to copy cookies from the page</li>
-                    <li><strong>Done!</strong> Cookies will be sent to your API</li>
-                </ol>
+            <div class="step-card">
+                <span class="step-number">1</span>
+                <h3>Open the Page</h3>
+                <p>Click the button below to open dramadunyam.com in a new tab:</p>
+                <a href="https://dramadunyam.com/en/series/scorns-of-the-olympian-blood/episode-1" target="_blank" class="button">
+                    🌐 Open Drama Page
+                </a>
+                <p style="margin-top: 10px; font-size: 13px; color: #666;">Wait for Cloudflare challenge to complete in the new tab</p>
             </div>
-            <p style="color: #856404; background: #fff3cd; padding: 12px; border-radius: 8px; margin: 15px 0;">
-                <strong>Note:</strong> Due to browser security, cookies must be copied manually. The button will guide you through the process.
-            </p>
-            <button onclick="closeInstructions()">Got it!</button>
-        </div>
-    </div>
 
-    <!-- Capture Modal -->
-    <div id="captureModal" class="modal">
-        <div class="modal-content">
-            <h2>📋 Copy & Capture</h2>
-            <p><strong>Step 1:</strong> Copy this code (tap to copy):</p>
-            <div style="background: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 10px; font-family: monospace; word-break: break-all; cursor: pointer; margin: 15px 0;" onclick="copySnippet()">
-                document.cookie
+            <div class="step-card">
+                <span class="step-number">2</span>
+                <h3>Open Browser Console</h3>
+                <p><strong>On Desktop:</strong> Press <kbd>F12</kbd> or <kbd>Ctrl+Shift+J</kbd> (Windows) / <kbd>Cmd+Option+J</kbd> (Mac)</p>
+                <p><strong>On Mobile:</strong></p>
+                <ul style="color: #555; margin-left: 20px; line-height: 1.8;">
+                    <li><strong>Chrome:</strong> Menu → More Tools → Developer Tools</li>
+                    <li><strong>Firefox:</strong> Menu → Tools → Browser Tools → Web Developer Tools</li>
+                    <li><strong>Safari:</strong> Enable Developer menu in Settings first</li>
+                </ul>
             </div>
-            <p><strong>Step 2:</strong> Open browser console:</p>
-            <p style="font-size: 13px; color: #666;">
-                • Desktop: Press F12 or Ctrl+Shift+J<br>
-                • Mobile: Use browser developer tools
-            </p>
-            <p><strong>Step 3:</strong> Paste the code in console, press Enter, and copy the result</p>
-            <p><strong>Step 4:</strong> Paste the cookies here:</p>
-            <textarea id="cookieInput" style="width: 100%; min-height: 100px; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-family: monospace; font-size: 12px;" placeholder="Paste cookies here..."></textarea>
-            <button onclick="uploadCookies()">🚀 Upload Cookies</button>
-            <button onclick="closeCaptureModal()" style="background: #6c757d; color: white;">Cancel</button>
-            <div id="captureAlert" style="margin-top: 15px; padding: 12px; border-radius: 8px; display: none;"></div>
+
+            <div class="step-card">
+                <span class="step-number">3</span>
+                <h3>Copy Cookies</h3>
+                <p>In the Console tab, paste this code and press Enter:</p>
+                <div class="code-snippet" onclick="copySnippet()">
+                    document.cookie
+                </div>
+                <button onclick="copySnippet()" class="button-secondary">📋 Copy Code</button>
+                <p style="margin-top: 10px; font-size: 13px; color: #666;">The console will show your cookies. Copy the entire output.</p>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">4</span>
+                <h3>Paste & Upload</h3>
+                <p>Paste the cookies you copied from the console:</p>
+                <textarea id="cookieInput" placeholder="Paste cookies here..."></textarea>
+                <button onclick="uploadCookies()">🚀 Upload Cookies</button>
+                <div id="uploadAlert" class="alert"></div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="/" class="back-link">← Back to Dashboard</a>
+            </div>
         </div>
     </div>
 
     <script>
         const API_BASE = window.location.origin;
 
-        function showInstructions() {
-            document.getElementById('instructionsModal').classList.add('show');
-        }
-
-        function closeInstructions() {
-            document.getElementById('instructionsModal').classList.remove('show');
-        }
-
-        function captureCookies() {
-            document.getElementById('captureModal').classList.add('show');
-        }
-
-        function closeCaptureModal() {
-            document.getElementById('captureModal').classList.remove('show');
-        }
-
         function copySnippet() {
-            const text = 'document.cookie';
-            navigator.clipboard.writeText(text).then(() => {
-                alert('✅ Code copied! Now paste it in browser console (F12)');
-            }).catch(() => {
-                alert('Code: document.cookie\n\nCopy this manually');
-            });
+            const code = 'document.cookie';
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(() => {
+                    alert('✅ Code copied! Now paste it in the browser console.');
+                }).catch(() => {
+                    alert('Code: document.cookie\n\nPlease copy this manually.');
+                });
+            } else {
+                // Fallback
+                const textarea = document.createElement('textarea');
+                textarea.value = code;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    alert('✅ Code copied! Now paste it in the browser console.');
+                } catch (err) {
+                    alert('Code: document.cookie\n\nPlease copy this manually.');
+                }
+                
+                document.body.removeChild(textarea);
+            }
         }
 
         async function uploadCookies() {
             const cookies = document.getElementById('cookieInput').value.trim();
-            const alertDiv = document.getElementById('captureAlert');
-            const statusBadge = document.getElementById('statusBadge');
+            const alertDiv = document.getElementById('uploadAlert');
 
             if (!cookies) {
-                showCaptureAlert('❌ Please paste your cookies first', 'error');
+                showAlert('❌ Please paste your cookies first', 'error');
                 return;
             }
 
             // Clean up the cookie string
             let cleanCookies = cookies;
             
-            // Remove quotes if user copied the entire string with quotes
+            // Remove quotes if user copied with quotes
             if (cleanCookies.startsWith('"') && cleanCookies.endsWith('"')) {
                 cleanCookies = cleanCookies.slice(1, -1);
             }
             if (cleanCookies.startsWith("'") && cleanCookies.endsWith("'")) {
                 cleanCookies = cleanCookies.slice(1, -1);
             }
+
+            // Change button text
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = '⏳ Uploading...';
+            button.disabled = true;
 
             try {
                 const response = await fetch(`${API_BASE}/api/cookies/manual`, {
@@ -282,45 +313,39 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    showCaptureAlert(`✅ Success! Captured ${data.cookieCount} cookies`, 'success');
-                    statusBadge.textContent = 'Active';
-                    statusBadge.className = 'status success';
+                    showAlert(`✅ Success! Uploaded ${data.cookieCount} cookies. You can now use the API!`, 'success');
+                    document.getElementById('cookieInput').value = '';
                     
-                    // Clear input and close modal after 2 seconds
+                    // Show success for 3 seconds then redirect
                     setTimeout(() => {
-                        document.getElementById('cookieInput').value = '';
-                        closeCaptureModal();
-                    }, 2000);
+                        window.location.href = '/';
+                    }, 3000);
                 } else {
-                    showCaptureAlert(`❌ Error: ${data.error}`, 'error');
+                    showAlert(`❌ Error: ${data.error}`, 'error');
+                    button.textContent = originalText;
+                    button.disabled = false;
                 }
             } catch (error) {
-                showCaptureAlert(`❌ Network error: ${error.message}`, 'error');
+                showAlert(`❌ Network error: ${error.message}`, 'error');
+                button.textContent = originalText;
+                button.disabled = false;
             }
         }
 
-        function showCaptureAlert(message, type) {
-            const alertDiv = document.getElementById('captureAlert');
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('uploadAlert');
             alertDiv.innerHTML = message;
+            alertDiv.className = `alert ${type}`;
             alertDiv.style.display = 'block';
-            alertDiv.style.background = type === 'success' ? '#d4edda' : '#f8d7da';
-            alertDiv.style.color = type === 'success' ? '#155724' : '#721c24';
-            alertDiv.style.border = type === 'success' ? '1px solid #c3e6cb' : '1px solid #f5c6cb';
         }
 
-        // Try to detect if page loaded successfully
-        const iframe = document.getElementById('pageFrame');
-        iframe.addEventListener('load', () => {
-            console.log('Page loaded in iframe');
-        });
-
-        // Show instructions on first load
-        setTimeout(() => {
-            if (!localStorage.getItem('instructionsSeen')) {
-                showInstructions();
-                localStorage.setItem('instructionsSeen', 'true');
+        // Auto-focus textarea when page loads
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('step') === '4') {
+                document.getElementById('cookieInput').focus();
             }
-        }, 2000);
+        });
     </script>
 </body>
 </html>

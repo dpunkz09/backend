@@ -25,21 +25,19 @@ Automated cookie fetcher service for dramadunyam.com with a **public dashboard**
 
 The easiest method for all devices - visit `/capture.html`:
 
+**Simple 4-Step Process:**
+1. **Open Page** - Click button to open dramadunyam.com in new tab
+2. **Open Console** - Press F12 (or follow mobile instructions)
+3. **Copy Cookies** - Paste `document.cookie` in console
+4. **Upload** - Paste cookies and click upload
+
 **Features:**
-- Embedded iframe showing the target page
-- One-click "Capture Cookies" button
-- Step-by-step modal guide
+- Clean step-by-step wizard
 - Works on desktop AND mobile
 - No bookmarklet installation needed
-
-**How it works:**
-1. Page loads dramadunyam.com in an iframe below
-2. Wait for Cloudflare to complete (visible in the iframe)
-3. Click "Capture Cookies" button
-4. Follow the 4-step guide to copy cookies from console
-5. Paste and upload - done!
-
-This method works because you're copying cookies from the actual page's console, bypassing cross-origin restrictions.
+- No iframe issues
+- Visual progress indicators
+- Automatic redirect to dashboard on success
 
 ## 📊 Public Dashboard
 
