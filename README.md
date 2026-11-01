@@ -4,8 +4,9 @@ Automated cookie fetcher service for dramadunyam.com that can be deployed to Ren
 
 ## Features
 
-- Automated cookie fetching using Puppeteer
-- Handles Cloudflare challenges
+- Automated cookie fetching using Puppeteer with Stealth plugin
+- Advanced Cloudflare bypass using puppeteer-extra-plugin-stealth
+- Handles Cloudflare challenges automatically
 - Auto-refresh cookies every 6 hours via cron job
 - REST API endpoints for accessing cookies
 - Ready for Render deployment

@@ -1,5 +1,9 @@
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const chromium = require('@sparticuz/chromium');
+
+// Add stealth plugin to avoid Cloudflare detection
+puppeteer.use(StealthPlugin());
 
 const TARGET_URL = 'https://dramadunyam.com/en/series/scorns-of-the-olympian-blood/episode-1';
 
@@ -7,7 +11,7 @@ async function fetchCookies() {
   let browser;
   
   try {
-    console.log('Launching browser...');
+    console.log('Launching browser with stealth mode...');
     
     // Determine if we're in production (Render) or development
     const isProduction = process.env.NODE_ENV === 'production';
@@ -15,11 +19,16 @@ async function fetchCookies() {
     const browserConfig = isProduction ? {
       args: [
         ...chromium.args,
-        '--disable-blink-features=AutomationControlled'
+        '--disable-blink-features=AutomationControlled',
+        '--no-first-run',
+        '--no-default-browser-check',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding'
       ],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
-      headless: chromium.headless
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true
     } : {
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
       headless: 'new',
@@ -30,8 +39,11 @@ async function fetchCookies() {
         '--disable-gpu',
         '--disable-software-rasterizer',
         '--disable-extensions',
-        '--disable-blink-features=AutomationControlled'
-      ]
+        '--disable-blink-features=AutomationControlled',
+        '--no-first-run',
+        '--no-default-browser-check'
+      ],
+      ignoreHTTPSErrors: true
     };
 
     browser = await puppeteer.launch(browserConfig);
@@ -39,31 +51,18 @@ async function fetchCookies() {
     const page = await browser.newPage();
     
     // Set a realistic viewport
-    await page.setViewport({ width: 1920, height: 1080 });
+    await page.setViewport({ 
+      width: 1920, 
+      height: 1080,
+      deviceScaleFactor: 1,
+      hasTouch: false,
+      isLandscape: true,
+      isMobile: false
+    });
     
     // Set user agent
-    const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+    const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
     await page.setUserAgent(userAgent);
-    
-    // Hide automation indicators
-    await page.evaluateOnNewDocument(() => {
-      Object.defineProperty(navigator, 'webdriver', {
-        get: () => false,
-      });
-      
-      // Add chrome object
-      window.chrome = {
-        runtime: {}
-      };
-      
-      // Permissions API
-      const originalQuery = window.navigator.permissions.query;
-      window.navigator.permissions.query = (parameters) => (
-        parameters.name === 'notifications' ?
-          Promise.resolve({ state: Notification.permission }) :
-          originalQuery(parameters)
-      );
-    });
     
     // Set additional headers
     await page.setExtraHTTPHeaders({
@@ -75,55 +74,86 @@ async function fetchCookies() {
       'Sec-Fetch-Dest': 'document',
       'Sec-Fetch-Mode': 'navigate',
       'Sec-Fetch-Site': 'none',
-      'Sec-Fetch-User': '?1'
+      'Sec-Fetch-User': '?1',
+      'sec-ch-ua': '"Chromium";v="131", "Not_A Brand";v="24"',
+      'sec-ch-ua-mobile': '?0',
+      'sec-ch-ua-platform': '"Windows"'
     });
 
     console.log(`Navigating to ${TARGET_URL}...`);
     
     // Navigate to the page
-    await page.goto(TARGET_URL, {
-      waitUntil: 'domcontentloaded',
-      timeout: 60000
+    const response = await page.goto(TARGET_URL, {
+      waitUntil: ['load', 'domcontentloaded'],
+      timeout: 90000
     });
+    
+    console.log(`Initial response status: ${response.status()}`);
 
     // Wait a bit for initial page load
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(5000);
 
     // Check for Cloudflare challenge and wait for it to complete
     let challengeDetected = false;
-    for (let i = 0; i < 30; i++) {
-      const content = await page.content();
-      const title = await page.title();
+    let lastCheck = '';
+    
+    for (let i = 0; i < 40; i++) {
+      const title = await page.title().catch(() => '');
+      const url = page.url();
       
-      // Check if we're still on Cloudflare challenge
-      if (content.includes('challenge-platform') || 
-          content.includes('cf-challenge') || 
-          content.includes('checking your browser') ||
-          title.includes('Just a moment')) {
+      // Check multiple Cloudflare indicators
+      const content = await page.evaluate(() => {
+        const body = document.body.innerText.toLowerCase();
+        return {
+          hasChallengeText: body.includes('checking your browser') || 
+                           body.includes('just a moment') ||
+                           body.includes('verify you are human'),
+          hasTitle: document.title.toLowerCase().includes('just a moment'),
+          hasChallengeForm: !!document.querySelector('[action*="challenge"]'),
+          hasContent: document.body.innerText.length > 100
+        };
+      }).catch(() => ({ hasChallengeText: false, hasTitle: false, hasChallengeForm: false, hasContent: false }));
+      
+      const isChallenge = content.hasChallengeText || content.hasTitle || content.hasChallengeForm;
+      
+      if (isChallenge) {
         if (!challengeDetected) {
-          console.log('Cloudflare challenge detected, waiting...');
+          console.log('Cloudflare challenge detected, solving...');
           challengeDetected = true;
         }
-        await page.waitForTimeout(2000);
-      } else {
+        
+        const checkStatus = `Attempt ${i + 1}/40 - Waiting for challenge...`;
+        if (checkStatus !== lastCheck) {
+          console.log(checkStatus);
+          lastCheck = checkStatus;
+        }
+        
+        await page.waitForTimeout(3000);
+      } else if (content.hasContent) {
         // Challenge completed
         if (challengeDetected) {
           console.log('Cloudflare challenge passed!');
         }
+        console.log(`Final URL: ${url}`);
         break;
+      } else {
+        // Empty content, still loading
+        await page.waitForTimeout(2000);
       }
       
-      if (i === 29) {
-        throw new Error('Cloudflare challenge timeout - could not pass verification');
+      if (i === 39) {
+        console.error('Challenge timeout - capturing debug info...');
+        const finalTitle = await page.title();
+        const finalUrl = page.url();
+        console.error(`Final title: ${finalTitle}`);
+        console.error(`Final URL: ${finalUrl}`);
+        throw new Error('Cloudflare challenge timeout - could not pass verification after 120 seconds');
       }
     }
 
-    // Wait for network to be idle after challenge
-    await page.waitForTimeout(5000);
-
-    // Additional wait for cookies to be set
-    console.log('Waiting for cookies to be set...');
-    await page.waitForTimeout(3000);
+    // Wait additional time for cookies to be properly set
+    console.log('Challenge passed, waiting for cookies to stabilize...');
+    await page.waitForTimeout(8000);
 
     // Get all cookies
     const cookies = await page.cookies();
@@ -134,9 +164,17 @@ async function fetchCookies() {
 
     console.log(`Fetched ${cookies.length} cookies`);
     
+    // Log cookie names for debugging
+    const cookieNames = cookies.map(c => c.name).join(', ');
+    console.log(`Cookie names: ${cookieNames}`);
+    
     // Check for required cookies (especially cf_clearance)
     const hasCfClearance = cookies.some(c => c.name === 'cf_clearance');
     console.log(`cf_clearance cookie present: ${hasCfClearance}`);
+    
+    if (!hasCfClearance) {
+      console.warn('Warning: cf_clearance cookie not found - Cloudflare may have changed protection');
+    }
 
     // Format cookies as a single string (like browser format)
     const cookieString = cookies
