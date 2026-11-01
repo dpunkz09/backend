@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Cookie Capture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        .step-number {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 700;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        .step p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 15px;
+            margin: 8px 0;
+        }
+        button, .button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 0;
+            text-decoration: none;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        button:active, .button:active {
+            transform: scale(0.98);
+        }
+        .button-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            margin: 10px 0;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+        .alert.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .alert.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .alert.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        .tab-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+        }
+        .tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>📱 Mobile Cookie Capture</h1>
+            <p class="subtitle">Easy cookie capture for Android & iOS</p>
+
+            <div class="tab-container">
+                <div class="tab active" onclick="switchTab('method1')">📋 Copy/Paste</div>
+                <div class="tab" onclick="switchTab('method2')">🔗 Bookmark</div>
+                <div class="tab" onclick="switchTab('method3')">🤖 Auto</div>
+            </div>
+
+            <!-- Method 1: Copy/Paste -->
+            <div id="method1" class="tab-content active">
+                <h2>Method 1: Copy & Paste (Easiest)</h2>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <p><strong>Visit the page:</strong></p>
+                    <a href="https://dramadunyam.com/en/series/scorns-of-the-olympian-blood/episode-1" target="_blank" class="button-secondary button">
+                        🌐 Open Drama Page
+                    </a>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <p><strong>Copy this JavaScript code:</strong></p>
+                    <div class="code-box" id="jsCodeMobile">
+javascript:(function(){const API="https://backend-zbr5.onrender.com";const c=document.cookie;if(!c){alert("❌ No cookies!");return;}const x=new XMLHttpRequest();x.open("POST",API+"/api/cookies/manual",true);x.setRequestHeader("Content-Type","application/json");x.onload=function(){if(x.status===200){alert("✅ Success!");}else{alert("❌ Error");}};x.onerror=function(){alert("❌ Network error")};x.send(JSON.stringify({cookie:c,userAgent:navigator.userAgent}));})();
+                    </div>
+                    <button onclick="copyCode()">📋 Copy Code</button>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <p><strong>Paste in browser address bar:</strong></p>
+                    <p>Paste the code in your mobile browser's address bar and press Enter/Go</p>
+                    <p style="color: #856404; background: #fff3cd; padding: 10px; border-radius: 8px; margin-top: 10px;">
+                        ⚠️ <strong>Note:</strong> Some browsers may remove "javascript:" from the beginning. Add it back manually if needed.
+                    </p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <p><strong>See success message:</strong></p>
+                    <p>You'll see "✅ Success!" alert when cookies are captured</p>
+                </div>
+            </div>
+
+            <!-- Method 2: Mobile Bookmark -->
+            <div id="method2" class="tab-content">
+                <h2>Method 2: Mobile Bookmark</h2>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <p><strong>Bookmark this page:</strong></p>
+                    <p>Add this page to your bookmarks/favorites</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <p><strong>Edit the bookmark:</strong></p>
+                    <p>Go to your bookmarks, find this page, and edit it</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <p><strong>Replace URL with:</strong></p>
+                    <div class="code-box">
+javascript:(function(){const API="https://backend-zbr5.onrender.com";const c=document.cookie;if(!c){alert("❌ No cookies!");return;}const x=new XMLHttpRequest();x.open("POST",API+"/api/cookies/manual",true);x.setRequestHeader("Content-Type","application/json");x.onload=function(){if(x.status===200){alert("✅ Success!");}};x.send(JSON.stringify({cookie:c,userAgent:navigator.userAgent}));})();
+                    </div>
+                    <button onclick="copyCode()">📋 Copy Code</button>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <p><strong>Use it:</strong></p>
+                    <p>Visit dramadunyam.com, then open your bookmarks and tap this bookmark</p>
+                </div>
+
+                <p style="color: #666; font-size: 13px; margin-top: 15px;">
+                    <strong>Browser Support:</strong><br>
+                    ✅ Chrome Mobile<br>
+                    ✅ Firefox Mobile<br>
+                    ⚠️ Safari Mobile (limited support)<br>
+                    ✅ Samsung Internet
+                </p>
+            </div>
+
+            <!-- Method 3: Automated Capture -->
+            <div id="method3" class="tab-content">
+                <h2>Method 3: Automated Capture</h2>
+                
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <p><strong>Visit and wait:</strong></p>
+                    <a href="https://dramadunyam.com/en/series/scorns-of-the-olympian-blood/episode-1" target="_blank" class="button-secondary button">
+                        🌐 Open Drama Page
+                    </a>
+                    <p style="margin-top: 10px;">Wait for Cloudflare challenge to complete</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <p><strong>Paste cookies here:</strong></p>
+                    <textarea id="cookieInput" placeholder="Long-press in address bar → Select all → Copy → Paste here..."></textarea>
+                    <p style="color: #666; font-size: 13px;">
+                        In your browser: Type "javascript:alert(document.cookie)" in address bar, copy the result
+                    </p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <p><strong>Upload to API:</strong></p>
+                    <button onclick="uploadCookies()">🚀 Upload Cookies</button>
+                </div>
+
+                <div id="uploadAlert" class="alert"></div>
+            </div>
+        </div>
+
+        <a href="/" class="back-link">← Back to Dashboard</a>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function copyCode() {
+            const code = document.getElementById('jsCodeMobile').textContent.trim();
+            
+            // Try modern clipboard API first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(() => {
+                    alert('✅ Code copied! Paste it in the browser address bar.');
+                }).catch(() => {
+                    fallbackCopy(code);
+                });
+            } else {
+                fallbackCopy(code);
+            }
+        }
+
+        function fallbackCopy(text) {
+            // Fallback for older browsers
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('✅ Code copied! Paste it in the browser address bar.');
+            } catch (err) {
+                alert('❌ Copy failed. Please copy manually from the code box above.');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        async function uploadCookies() {
+            const cookies = document.getElementById('cookieInput').value.trim();
+            const alertDiv = document.getElementById('uploadAlert');
+
+            if (!cookies) {
+                showAlert('Please paste your cookies first', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/cookies/manual`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        cookie: cookies,
+                        userAgent: navigator.userAgent
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert(`✅ Success! Uploaded ${data.cookieCount} cookies`, 'success');
+                    document.getElementById('cookieInput').value = '';
+                } else {
+                    showAlert(`❌ Error: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert(`❌ Network error: ${error.message}`, 'error');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('uploadAlert');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert ${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

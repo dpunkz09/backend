@@ -40,6 +40,30 @@ The easiest way to capture cookies:
 4. Click the bookmarklet
 5. Cookies automatically uploaded to your API!
 
+## 📱 Mobile Support
+
+**For Android & iOS users**, visit `https://your-app.onrender.com/mobile.html`
+
+### Mobile Methods:
+
+**Method 1: Copy/Paste (Easiest)**
+1. Copy the JavaScript code
+2. Visit dramadunyam.com
+3. Paste code in browser address bar
+4. Press Enter
+
+**Method 2: Mobile Bookmark**
+1. Save bookmark with JavaScript code
+2. Visit dramadunyam.com
+3. Tap bookmark from your bookmarks
+
+**Method 3: Manual Upload**
+1. Get cookies from browser
+2. Paste in mobile page
+3. Click upload
+
+See full mobile instructions at `/mobile.html` on your deployed app.
+
 ## API Endpoints
 
 ### GET /
