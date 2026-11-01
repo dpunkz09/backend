@@ -22,12 +22,24 @@ Returns the current cookies in JSON format:
 {
   "cookie": "cookie_string_here",
   "userAgent": "Mozilla/5.0...",
-  "updatedAt": "2026-10-24T07:03:56.323Z"
+  "updatedAt": "2026-10-24T07:03:56.323Z",
+  "source": "manual"
 }
 ```
 
 ### POST /api/refresh
-Manually trigger a cookie refresh
+Manually trigger an automatic cookie fetch (may fail if Cloudflare blocks Render IPs)
+
+### POST /api/cookies/manual
+**Manually update cookies** - Use this if automatic fetching fails:
+```json
+{
+  "cookie": "your_cookie_string_from_browser",
+  "userAgent": "optional_user_agent_string"
+}
+```
+
+See [UPDATE_COOKIES.md](UPDATE_COOKIES.md) for detailed instructions on manually updating cookies.
 
 ## Local Development
 
@@ -96,6 +108,22 @@ The server will start on port 3000 by default (or PORT environment variable).
 3. Puppeteer handles browser automation and Cloudflare challenges
 4. Cookies are stored in memory and served via the API
 5. Manual refresh is available via POST endpoint
+
+## Important Notes
+
+### Cloudflare Protection
+
+The dramadunyam.com website uses aggressive Cloudflare protection that may block automated access from cloud hosting providers like Render. If automatic cookie fetching fails:
+
+1. **Use Manual Cookie Update** - See [UPDATE_COOKIES.md](UPDATE_COOKIES.md) for step-by-step guide
+2. **Run from Your Local Machine** - Cloudflare is less likely to block residential IPs
+3. **Set Up Automated Updates** - Use a local cron job or scheduled task to update cookies periodically
+
+### Cookie Expiration
+
+- Cloudflare cookies typically expire after 6-24 hours
+- The service tracks cookie source (`auto` or `manual`)
+- Failed automatic updates won't overwrite working manual cookies
 
 ## Troubleshooting
 
