@@ -82,6 +82,14 @@ async function fetchCookies() {
 
     console.log(`Navigating to ${TARGET_URL}...`);
     
+    // Set up navigation promise handler to catch redirects
+    let navigationPromise = null;
+    page.on('framenavigated', (frame) => {
+      if (frame === page.mainFrame()) {
+        console.log(`Page navigated to: ${frame.url()}`);
+      }
+    });
+    
     // Navigate to the page
     const response = await page.goto(TARGET_URL, {
       waitUntil: ['load', 'domcontentloaded'],
@@ -90,64 +98,92 @@ async function fetchCookies() {
     
     console.log(`Initial response status: ${response.status()}`);
 
-    // Wait a bit for initial page load
-    await page.waitForTimeout(5000);
+    // Wait longer initially for Cloudflare to start its challenge
+    await page.waitForTimeout(8000);
 
     // Check for Cloudflare challenge and wait for it to complete
     let challengeDetected = false;
     let lastCheck = '';
+    let consecutiveSuccesses = 0;
     
-    for (let i = 0; i < 40; i++) {
-      const title = await page.title().catch(() => '');
-      const url = page.url();
-      
-      // Check multiple Cloudflare indicators
-      const content = await page.evaluate(() => {
-        const body = document.body.innerText.toLowerCase();
-        return {
-          hasChallengeText: body.includes('checking your browser') || 
-                           body.includes('just a moment') ||
-                           body.includes('verify you are human'),
-          hasTitle: document.title.toLowerCase().includes('just a moment'),
-          hasChallengeForm: !!document.querySelector('[action*="challenge"]'),
-          hasContent: document.body.innerText.length > 100
-        };
-      }).catch(() => ({ hasChallengeText: false, hasTitle: false, hasChallengeForm: false, hasContent: false }));
-      
-      const isChallenge = content.hasChallengeText || content.hasTitle || content.hasChallengeForm;
-      
-      if (isChallenge) {
-        if (!challengeDetected) {
-          console.log('Cloudflare challenge detected, solving...');
-          challengeDetected = true;
+    for (let i = 0; i < 50; i++) {
+      try {
+        const url = page.url();
+        
+        // Get cookies without using page.evaluate()
+        const cookies = await page.cookies();
+        const hasCfClearance = cookies.some(c => c.name === 'cf_clearance');
+        
+        // Try to get title safely
+        let title = '';
+        try {
+          title = await page.title();
+        } catch (e) {
+          console.log('Could not get title (page may be navigating)');
         }
         
-        const checkStatus = `Attempt ${i + 1}/40 - Waiting for challenge...`;
-        if (checkStatus !== lastCheck) {
-          console.log(checkStatus);
-          lastCheck = checkStatus;
+        // If we have cf_clearance cookie and we're on the right domain
+        if (hasCfClearance && url.includes('dramadunyam.com/en/series')) {
+          consecutiveSuccesses++;
+          console.log(`cf_clearance detected (${consecutiveSuccesses}/3 confirmations)`);
+          
+          // Wait for 3 consecutive successful checks to ensure stability
+          if (consecutiveSuccesses >= 3) {
+            console.log('Challenge passed and stable!');
+            console.log(`Final URL: ${url}`);
+            break;
+          }
+          
+          await page.waitForTimeout(2000);
+          continue;
+        } else {
+          consecutiveSuccesses = 0;
         }
         
-        await page.waitForTimeout(3000);
-      } else if (content.hasContent) {
-        // Challenge completed
-        if (challengeDetected) {
-          console.log('Cloudflare challenge passed!');
+        // Check if still on challenge
+        const isChallenge = title.toLowerCase().includes('just a moment') || 
+                           title.toLowerCase().includes('attention required') ||
+                           url.includes('challenge');
+        
+        if (isChallenge || !hasCfClearance) {
+          if (!challengeDetected) {
+            console.log('Cloudflare challenge detected, solving...');
+            challengeDetected = true;
+          }
+          
+          const shortUrl = url.length > 60 ? url.substring(0, 60) + '...' : url;
+          const checkStatus = `Attempt ${i + 1}/50 - Cookies: ${cookies.length}, cf_clearance: ${hasCfClearance}`;
+          if (checkStatus !== lastCheck) {
+            console.log(checkStatus);
+            lastCheck = checkStatus;
+          }
+          
+          await page.waitForTimeout(3000);
+        } else {
+          // Might be done, verify
+          await page.waitForTimeout(2000);
         }
-        console.log(`Final URL: ${url}`);
-        break;
-      } else {
-        // Empty content, still loading
-        await page.waitForTimeout(2000);
-      }
-      
-      if (i === 39) {
-        console.error('Challenge timeout - capturing debug info...');
-        const finalTitle = await page.title();
-        const finalUrl = page.url();
-        console.error(`Final title: ${finalTitle}`);
-        console.error(`Final URL: ${finalUrl}`);
-        throw new Error('Cloudflare challenge timeout - could not pass verification after 120 seconds');
+        
+        if (i === 49) {
+          console.error('Challenge timeout - capturing debug info...');
+          const finalTitle = await page.title().catch(() => 'Unable to get title');
+          const finalUrl = page.url();
+          const finalCookies = await page.cookies();
+          const cookieNames = finalCookies.map(c => c.name).join(', ');
+          console.error(`Final title: ${finalTitle}`);
+          console.error(`Final URL: ${finalUrl}`);
+          console.error(`Cookies (${finalCookies.length}): ${cookieNames}`);
+          throw new Error('Cloudflare challenge timeout - could not pass verification after 150 seconds');
+        }
+      } catch (err) {
+        // Handle navigation errors gracefully
+        if (err.message.includes('Execution context was destroyed') || 
+            err.message.includes('Cannot find context')) {
+          console.log(`Navigation/context error at attempt ${i + 1}, waiting for page to stabilize...`);
+          await page.waitForTimeout(5000);
+          continue;
+        }
+        throw err;
       }
     }
 
