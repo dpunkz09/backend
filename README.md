@@ -63,6 +63,8 @@ The server will start on port 3000 by default (or PORT environment variable).
 5. Render will automatically detect the `render.yaml` file and configure the service
 6. Click "Apply" to deploy
 
+**Note**: The service is configured to use Node.js v20 for maximum compatibility.
+
 ### Option 2: Manual Setup
 
 1. Go to [Render Dashboard](https://dashboard.render.com/)
