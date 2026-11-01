@@ -15,10 +15,31 @@ Automated cookie fetcher service for dramadunyam.com with a **public dashboard**
 ## 🚀 Quick Start
 
 1. **Deploy to Render** (see deployment section below)
-2. **Visit the Dashboard** at `https://your-app.onrender.com`
-3. **Install the Bookmarklet** from the dashboard
-4. **Visit dramadunyam.com** and click the bookmarklet
-5. **Done!** Cookies are now available via API
+2. **Visit Quick Capture**: `https://your-app.onrender.com/capture.html`
+3. **Wait for page to load** (Cloudflare challenge will complete automatically)
+4. **Click "Capture Cookies"** button
+5. **Follow the simple steps** to copy and paste cookies
+6. **Done!** Cookies are now available via API
+
+## ⚡ Quick Capture Page (Recommended!)
+
+The easiest method for all devices - visit `/capture.html`:
+
+**Features:**
+- Embedded iframe showing the target page
+- One-click "Capture Cookies" button
+- Step-by-step modal guide
+- Works on desktop AND mobile
+- No bookmarklet installation needed
+
+**How it works:**
+1. Page loads dramadunyam.com in an iframe below
+2. Wait for Cloudflare to complete (visible in the iframe)
+3. Click "Capture Cookies" button
+4. Follow the 4-step guide to copy cookies from console
+5. Paste and upload - done!
+
+This method works because you're copying cookies from the actual page's console, bypassing cross-origin restrictions.
 
 ## 📊 Public Dashboard
 
