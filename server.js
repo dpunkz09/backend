@@ -7,8 +7,13 @@ const { fetchCookies } = require('./cookieFetcher');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Enable CORS
-app.use(cors());
+// Enable CORS for all origins (required for bookmarklet to work)
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  credentials: false
+}));
 app.use(express.json());
 
 // Serve static files (dashboard)
@@ -152,6 +157,9 @@ app.post('/api/cookies/manual', (req, res) => {
     cookieCount: cookie.split('; ').length
   });
 });
+
+// Handle OPTIONS requests for CORS preflight
+app.options('*', cors());
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
