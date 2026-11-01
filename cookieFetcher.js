@@ -13,7 +13,10 @@ async function fetchCookies() {
     const isProduction = process.env.NODE_ENV === 'production';
     
     const browserConfig = isProduction ? {
-      args: chromium.args,
+      args: [
+        ...chromium.args,
+        '--disable-blink-features=AutomationControlled'
+      ],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
       headless: chromium.headless
@@ -26,7 +29,8 @@ async function fetchCookies() {
         '--disable-dev-shm-usage',
         '--disable-gpu',
         '--disable-software-rasterizer',
-        '--disable-extensions'
+        '--disable-extensions',
+        '--disable-blink-features=AutomationControlled'
       ]
     };
 
@@ -41,36 +45,85 @@ async function fetchCookies() {
     const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
     await page.setUserAgent(userAgent);
     
+    // Hide automation indicators
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, 'webdriver', {
+        get: () => false,
+      });
+      
+      // Add chrome object
+      window.chrome = {
+        runtime: {}
+      };
+      
+      // Permissions API
+      const originalQuery = window.navigator.permissions.query;
+      window.navigator.permissions.query = (parameters) => (
+        parameters.name === 'notifications' ?
+          Promise.resolve({ state: Notification.permission }) :
+          originalQuery(parameters)
+      );
+    });
+    
     // Set additional headers
     await page.setExtraHTTPHeaders({
       'Accept-Language': 'en-US,en;q=0.9',
       'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
       'Accept-Encoding': 'gzip, deflate, br',
       'Connection': 'keep-alive',
-      'Upgrade-Insecure-Requests': '1'
+      'Upgrade-Insecure-Requests': '1',
+      'Sec-Fetch-Dest': 'document',
+      'Sec-Fetch-Mode': 'navigate',
+      'Sec-Fetch-Site': 'none',
+      'Sec-Fetch-User': '?1'
     });
 
     console.log(`Navigating to ${TARGET_URL}...`);
     
-    // Navigate to the page and wait for network to be idle
+    // Navigate to the page
     await page.goto(TARGET_URL, {
-      waitUntil: 'networkidle2',
+      waitUntil: 'domcontentloaded',
       timeout: 60000
     });
 
-    // Wait a bit more for any delayed cookie setting
+    // Wait a bit for initial page load
+    await page.waitForTimeout(3000);
+
+    // Check for Cloudflare challenge and wait for it to complete
+    let challengeDetected = false;
+    for (let i = 0; i < 30; i++) {
+      const content = await page.content();
+      const title = await page.title();
+      
+      // Check if we're still on Cloudflare challenge
+      if (content.includes('challenge-platform') || 
+          content.includes('cf-challenge') || 
+          content.includes('checking your browser') ||
+          title.includes('Just a moment')) {
+        if (!challengeDetected) {
+          console.log('Cloudflare challenge detected, waiting...');
+          challengeDetected = true;
+        }
+        await page.waitForTimeout(2000);
+      } else {
+        // Challenge completed
+        if (challengeDetected) {
+          console.log('Cloudflare challenge passed!');
+        }
+        break;
+      }
+      
+      if (i === 29) {
+        throw new Error('Cloudflare challenge timeout - could not pass verification');
+      }
+    }
+
+    // Wait for network to be idle after challenge
     await page.waitForTimeout(5000);
 
-    // Check for Cloudflare challenge
-    const content = await page.content();
-    if (content.includes('challenge-platform') || content.includes('cf-challenge')) {
-      console.log('Cloudflare challenge detected, waiting...');
-      // Wait up to 30 seconds for the challenge to complete
-      await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 }).catch(() => {
-        console.log('Navigation timeout, but continuing...');
-      });
-      await page.waitForTimeout(3000);
-    }
+    // Additional wait for cookies to be set
+    console.log('Waiting for cookies to be set...');
+    await page.waitForTimeout(3000);
 
     // Get all cookies
     const cookies = await page.cookies();
@@ -80,6 +133,10 @@ async function fetchCookies() {
     }
 
     console.log(`Fetched ${cookies.length} cookies`);
+    
+    // Check for required cookies (especially cf_clearance)
+    const hasCfClearance = cookies.some(c => c.name === 'cf_clearance');
+    console.log(`cf_clearance cookie present: ${hasCfClearance}`);
 
     // Format cookies as a single string (like browser format)
     const cookieString = cookies

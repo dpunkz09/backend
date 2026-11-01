@@ -21,12 +21,15 @@ let cookieData = {
 // Fetch cookies immediately on startup
 (async () => {
   console.log('Fetching initial cookies...');
+  console.log('This may take 30-60 seconds due to Cloudflare protection...');
   try {
     cookieData = await fetchCookies();
     console.log('Initial cookies fetched successfully');
+    console.log('Cookie count:', cookieData.cookie.split('; ').length);
   } catch (error) {
     console.error('Failed to fetch initial cookies:', error.message);
     cookieData.error = error.message;
+    cookieData.updatedAt = new Date().toISOString();
   }
 })();
 
@@ -60,7 +63,9 @@ app.get('/api/cookies', (req, res) => {
   if (!cookieData.cookie) {
     return res.status(503).json({
       error: 'Cookies not available yet',
-      message: cookieData.error || 'Cookie fetch in progress'
+      message: cookieData.error || 'Cookie fetch in progress',
+      lastAttempt: cookieData.updatedAt,
+      details: 'The service is attempting to fetch cookies. This may take up to 60 seconds.'
     });
   }
 
