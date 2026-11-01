@@ -35,12 +35,17 @@ Manually trigger a cookie refresh
 npm install
 ```
 
-2. Run in development mode:
+2. For local testing, you'll need Chromium installed:
+   - **Ubuntu/Debian**: `sudo apt-get install chromium-browser`
+   - **macOS**: `brew install chromium`
+   - **Windows**: Download from [chromium.org](https://www.chromium.org/getting-involved/download-chromium/)
+
+3. Run in development mode:
 ```bash
 npm run dev
 ```
 
-3. Run in production mode:
+4. Run in production mode:
 ```bash
 npm start
 ```
@@ -69,14 +74,14 @@ The server will start on port 3000 by default (or PORT environment variable).
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
    - **Plan**: Free
-5. Add environment variables:
+5. Add environment variable:
    - `NODE_ENV=production`
-   - `PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false`
 6. Click "Create Web Service"
 
 ### Important Notes for Render
 
-- Render's free tier includes Chromium, which Puppeteer needs
+- The service uses `puppeteer-core` with `@sparticuz/chromium` for Render compatibility
+- This avoids downloading Chromium during build (much faster deployment)
 - The service will automatically restart if it crashes
 - Free tier services sleep after 15 minutes of inactivity
 - First request after sleep may take 30-60 seconds
@@ -84,7 +89,7 @@ The server will start on port 3000 by default (or PORT environment variable).
 ## How It Works
 
 1. On startup, the service immediately fetches cookies from dramadunyam.com
-2. A cron job runs every 30 minutes to refresh the cookies
+2. A cron job runs every 6 hours to refresh the cookies
 3. Puppeteer handles browser automation and Cloudflare challenges
 4. Cookies are stored in memory and served via the API
 5. Manual refresh is available via POST endpoint

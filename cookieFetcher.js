@@ -1,4 +1,5 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium');
 
 const TARGET_URL = 'https://dramadunyam.com/en/series/scorns-of-the-olympian-blood/episode-1';
 
@@ -7,7 +8,17 @@ async function fetchCookies() {
   
   try {
     console.log('Launching browser...');
-    browser = await puppeteer.launch({
+    
+    // Determine if we're in production (Render) or development
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    const browserConfig = isProduction ? {
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless
+    } : {
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
       headless: 'new',
       args: [
         '--no-sandbox',
@@ -17,7 +28,9 @@ async function fetchCookies() {
         '--disable-software-rasterizer',
         '--disable-extensions'
       ]
-    });
+    };
+
+    browser = await puppeteer.launch(browserConfig);
 
     const page = await browser.newPage();
     
